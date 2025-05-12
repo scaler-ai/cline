@@ -37,8 +37,6 @@ import { MAX_IMAGES_PER_MESSAGE } from "@/components/chat/ChatView"
 import ContextMenu from "@/components/chat/ContextMenu"
 import SlashCommandMenu from "@/components/chat/SlashCommandMenu"
 import { ChatSettings } from "@shared/ChatSettings"
-import ServersToggleModal from "./ServersToggleModal"
-import ClineRulesToggleModal from "../cline-rules/ClineRulesToggleModal"
 
 const getImageDimensions = (dataUrl: string): Promise<{ width: number; height: number }> => {
 	return new Promise((resolve, reject) => {
@@ -1614,37 +1612,6 @@ const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 									</ButtonContainer>
 								</VSCodeButton>
 							</Tooltip>
-							<ServersToggleModal />
-							<ClineRulesToggleModal />
-							<ModelContainer ref={modelSelectorRef}>
-								<ModelButtonWrapper ref={buttonRef}>
-									<ModelDisplayButton
-										role="button"
-										isActive={showModelSelector}
-										disabled={false}
-										title="Select Model / API Provider"
-										onClick={handleModelButtonClick}
-										tabIndex={0}>
-										<ModelButtonContent>{modelDisplayName}</ModelButtonContent>
-									</ModelDisplayButton>
-								</ModelButtonWrapper>
-								{showModelSelector && (
-									<ModelSelectorTooltip
-										arrowPosition={arrowPosition}
-										menuPosition={menuPosition}
-										style={{
-											bottom: `calc(100vh - ${menuPosition}px + 6px)`,
-										}}>
-										<ApiOptions
-											showModelOptions={true}
-											apiErrorMessage={undefined}
-											modelIdErrorMessage={undefined}
-											isPopup={true}
-											saveImmediately={true} // Ensure popup saves immediately
-										/>
-									</ModelSelectorTooltip>
-								)}
-							</ModelContainer>
 						</ButtonGroup>
 					</div>
 					{/* Tooltip for Plan/Act toggle remains outside the conditional rendering */}

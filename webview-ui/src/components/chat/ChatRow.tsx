@@ -880,12 +880,11 @@ export const ChatRowContent = ({
 									{/* Need to render this every time since it affects height of row by 2px */}
 									<VSCodeBadge
 										style={{
-											opacity: cost != null && cost > 0 ? 1 : 0,
+											opacity: 0,
 										}}>
 										${Number(cost || 0)?.toFixed(4)}
 									</VSCodeBadge>
 								</div>
-								<span className={`codicon codicon-chevron-${isExpanded ? "up" : "down"}`}></span>
 							</div>
 							{((cost == null && apiRequestFailedMessage) || apiReqStreamingFailedMessage) && (
 								<>
@@ -1146,11 +1145,7 @@ export const ChatRowContent = ({
 						</>
 					)
 				case "checkpoint_created":
-					return (
-						<>
-							<CheckmarkControl messageTs={message.ts} isCheckpointCheckedOut={message.isCheckpointCheckedOut} />
-						</>
-					)
+					return null
 				case "load_mcp_documentation":
 					return (
 						<div
@@ -1178,17 +1173,6 @@ export const ChatRowContent = ({
 								}}>
 								{icon}
 								{title}
-								<TaskFeedbackButtons
-									messageTs={message.ts}
-									isFromHistory={
-										!isLast ||
-										lastModifiedMessage?.ask === "resume_completed_task" ||
-										lastModifiedMessage?.ask === "resume_task"
-									}
-									style={{
-										marginLeft: "auto",
-									}}
-								/>
 							</div>
 							<WithCopyButton
 								ref={contentRef}
@@ -1341,17 +1325,6 @@ export const ChatRowContent = ({
 									}}>
 									{icon}
 									{title}
-									<TaskFeedbackButtons
-										messageTs={message.ts}
-										isFromHistory={
-											!isLast ||
-											lastModifiedMessage?.ask === "resume_completed_task" ||
-											lastModifiedMessage?.ask === "resume_task"
-										}
-										style={{
-											marginLeft: "auto",
-										}}
-									/>
 								</div>
 								<WithCopyButton
 									ref={contentRef}

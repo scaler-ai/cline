@@ -67,63 +67,6 @@
 				"command": "cline.plusButtonClicked",
 				"title": "New Task",
 				"icon": "$(add)"
-			},
-			{
-				"command": "cline.mcpButtonClicked",
-				"title": "MCP Servers",
-				"icon": "$(server)"
-			},
-			{
-				"command": "cline.historyButtonClicked",
-				"title": "History",
-				"icon": "$(history)"
-			},
-			{
-				"command": "cline.popoutButtonClicked",
-				"title": "Open in Editor",
-				"icon": "$(link-external)"
-			},
-			{
-				"command": "cline.accountButtonClicked",
-				"title": "Account",
-				"icon": "$(account)"
-			},
-			{
-				"command": "cline.settingsButtonClicked",
-				"title": "Settings",
-				"icon": "$(settings-gear)"
-			},
-			{
-				"command": "cline.openInNewTab",
-				"title": "Open In New Tab",
-				"category": "Cline"
-			},
-			{
-				"command": "cline.dev.createTestTasks",
-				"title": "Create Test Tasks",
-				"category": "Cline",
-				"when": "cline.isDevMode"
-			},
-			{
-				"command": "cline.addToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
-			},
-			{
-				"command": "cline.addTerminalOutputToChat",
-				"title": "Add to Cline",
-				"category": "Cline"
-			},
-			{
-				"command": "cline.focusChatInput",
-				"title": "Jump to Chat Input",
-				"category": "Cline"
-			},
-			{
-				"command": "cline.generateGitCommitMessage",
-				"title": "Generate Commit Message with Cline",
-				"category": "Cline",
-				"icon": "$(robot)"
 			}
 		],
 		"keybindings": [
@@ -146,31 +89,6 @@
 					"command": "cline.plusButtonClicked",
 					"group": "navigation@1",
 					"when": "view == claude-dev.SidebarProvider"
-				},
-				{
-					"command": "cline.mcpButtonClicked",
-					"group": "navigation@2",
-					"when": "view == claude-dev.SidebarProvider"
-				},
-				{
-					"command": "cline.historyButtonClicked",
-					"group": "navigation@3",
-					"when": "view == claude-dev.SidebarProvider"
-				},
-				{
-					"command": "cline.popoutButtonClicked",
-					"group": "navigation@4",
-					"when": "view == claude-dev.SidebarProvider"
-				},
-				{
-					"command": "cline.accountButtonClicked",
-					"group": "navigation@5",
-					"when": "view == claude-dev.SidebarProvider"
-				},
-				{
-					"command": "cline.settingsButtonClicked",
-					"group": "navigation@6",
-					"when": "view == claude-dev.SidebarProvider"
 				}
 			],
 			"editor/title": [
@@ -178,57 +96,6 @@
 					"command": "cline.plusButtonClicked",
 					"group": "navigation@1",
 					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				},
-				{
-					"command": "cline.mcpButtonClicked",
-					"group": "navigation@2",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				},
-				{
-					"command": "cline.historyButtonClicked",
-					"group": "navigation@3",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				},
-				{
-					"command": "cline.popoutButtonClicked",
-					"group": "navigation@4",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				},
-				{
-					"command": "cline.accountButtonClicked",
-					"group": "navigation@5",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				},
-				{
-					"command": "cline.settingsButtonClicked",
-					"group": "navigation@6",
-					"when": "activeWebviewPanelId == claude-dev.TabPanelProvider"
-				}
-			],
-			"editor/context": [
-				{
-					"command": "cline.addToChat",
-					"group": "navigation",
-					"when": "editorHasSelection"
-				}
-			],
-			"terminal/context": [
-				{
-					"command": "cline.addTerminalOutputToChat",
-					"group": "navigation"
-				}
-			],
-			"scm/title": [
-				{
-					"command": "cline.generateGitCommitMessage",
-					"group": "navigation",
-					"when": "scmProvider == git"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "cline.generateGitCommitMessage",
-					"when": "scmProvider == git"
 				}
 			]
 		},

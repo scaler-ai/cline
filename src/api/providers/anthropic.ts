@@ -12,8 +12,8 @@ export class AnthropicHandler implements ApiHandler {
 	constructor(options: ApiHandlerOptions) {
 		this.options = options
 		this.client = new Anthropic({
-			apiKey: this.options.apiKey,
-			baseURL: this.options.anthropicBaseUrl || undefined,
+			apiKey: "dummy-key", // Real key is now in middleware
+			baseURL: "http://localhost:8000/api/extension",
 		})
 	}
 
@@ -22,6 +22,16 @@ export class AnthropicHandler implements ApiHandler {
 		const model = this.getModel()
 		let stream: AnthropicStream<Anthropic.RawMessageStreamEvent>
 		const modelId = model.id
+
+		const authToken =
+			process.env.SESSION_AUTH_TOKEN ||
+			"BAh7CToMdXNlcl9pZEkiKTdjNmNmMTQ0LTA3Y2QtNGJhNC05ZDdkLWFlZWYxODY2M2QxMAY6BkVUOg91c2VyX2VtYWlsSSIgYXNodXRvc2guc2hyaW1hbEBzY2FsZXIuY29tBjsGVDoRYXNzb2NpYXRlX2lkSSINNDY3ODcwMDEGOwZUOhNhc3NvY2lhdGVfdHlwZUkiI0ludGVydmlld2JpdFRlc3RTZXNzaW9uUHJvYmxlbQY7BlQ=--85b3db35e3897098b78706df64631b3417135284"
+		const assistant_slug = process.env.ASSISTANT_SLUG || "scaler#code#nondsa"
+
+		const customHeaders: any = {
+			Authorization: authToken,
+			"X-ASSISTANT-SLUG": assistant_slug,
+		}
 
 		const budget_tokens = this.options.thinkingBudgetTokens || 0
 		const reasoningOn = modelId.includes("3-7") && budget_tokens !== 0 ? true : false
@@ -104,6 +114,7 @@ export class AnthropicHandler implements ApiHandler {
 								return {
 									headers: {
 										"anthropic-beta": "prompt-caching-2024-07-31",
+										...customHeaders,
 									},
 								}
 							default:
@@ -114,16 +125,21 @@ export class AnthropicHandler implements ApiHandler {
 				break
 			}
 			default: {
-				stream = await this.client.messages.create({
-					model: modelId,
-					max_tokens: model.info.maxTokens || 8192,
-					temperature: 0,
-					system: [{ text: systemPrompt, type: "text" }],
-					messages,
-					// tools,
-					// tool_choice: { type: "auto" },
-					stream: true,
-				})
+				stream = await this.client.messages.create(
+					{
+						model: modelId,
+						max_tokens: model.info.maxTokens || 8192,
+						temperature: 0,
+						system: [{ text: systemPrompt, type: "text" }],
+						messages,
+						// tools,
+						// tool_choice: { type: "auto" },
+						stream: true,
+					},
+					{
+						headers: customHeaders,
+					},
+				)
 				break
 			}
 		}

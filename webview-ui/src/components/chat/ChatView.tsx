@@ -21,14 +21,14 @@ import { vscode } from "@/utils/vscode"
 import { TaskServiceClient } from "@/services/grpc-client"
 import HistoryPreview from "@/components/history/HistoryPreview"
 import { normalizeApiConfiguration } from "@/components/settings/ApiOptions"
-import Announcement from "@/components/chat/Announcement"
-import AutoApproveMenu from "@/components/chat/auto-approve-menu/AutoApproveMenu"
+// import Announcement from "@/components/chat/Announcement"
+// import AutoApproveMenu from "@/components/chat/auto-approve-menu/AutoApproveMenu"
 import BrowserSessionRow from "@/components/chat/BrowserSessionRow"
 import ChatRow from "@/components/chat/ChatRow"
 import ChatTextArea from "@/components/chat/ChatTextArea"
 import QuotedMessagePreview from "@/components/chat/QuotedMessagePreview"
 import TaskHeader from "@/components/chat/TaskHeader"
-import TelemetryBanner from "@/components/common/TelemetryBanner"
+// import TelemetryBanner from "@/components/common/TelemetryBanner"
 import { unified } from "unified"
 import remarkStringify from "remark-stringify"
 import rehypeRemark from "rehype-remark"
@@ -999,16 +999,12 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 						flexDirection: "column",
 						paddingBottom: "10px",
 					}}>
-					{telemetrySetting === "unset" && <TelemetryBanner />}
-
-					{showAnnouncement && <Announcement version={version} hideAnnouncement={hideAnnouncement} />}
+					{/* {telemetrySetting === "unset" && <TelemetryBanner />} */}
 
 					<HomeHeader />
 					{taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />}
 				</div>
 			)}
-
-			{!task && <AutoApproveMenu />}
 
 			{task && (
 				<>
@@ -1042,7 +1038,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 							initialTopMostItemIndex={groupedMessages.length - 1}
 						/>
 					</div>
-					<AutoApproveMenu />
+					{/* <AutoApproveMenu /> */}
 					{showScrollToBottom ? (
 						<div
 							style={{

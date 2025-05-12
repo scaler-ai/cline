@@ -191,7 +191,7 @@ export const ExtensionStateContextProvider: React.FC<{
 								const config = stateData.apiConfiguration
 								const hasKey = config
 									? [
-											config.apiKey,
+											"dummy-api-key",
 											config.openRouterApiKey,
 											config.awsRegion,
 											config.vertexProjectId,
@@ -208,7 +208,7 @@ export const ExtensionStateContextProvider: React.FC<{
 											config.doubaoApiKey,
 											config.mistralApiKey,
 											config.vsCodeLmModelSelector,
-											config.clineApiKey,
+											"dummy-api-key",
 											config.asksageApiKey,
 											config.xaiApiKey,
 											config.sambanovaApiKey,
