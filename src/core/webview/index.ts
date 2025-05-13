@@ -59,6 +59,15 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 		return Array.from(this.activeInstances).filter((instance) => instance.view && "onDidChangeViewState" in instance.view)
 	}
 
+	public static closeAllTabInstances(): void {
+		const tabInstances = this.getTabInstances()
+		for (const instance of tabInstances) {
+			if (instance.view && "dispose" in instance.view) {
+				instance.view.dispose()
+			}
+		}
+	}
+
 	async resolveWebviewView(webviewView: vscode.WebviewView | vscode.WebviewPanel) {
 		this.view = webviewView
 
@@ -106,6 +115,15 @@ export class WebviewProvider implements vscode.WebviewViewProvider {
 							type: "action",
 							action: "didBecomeVisible",
 						})
+
+						// If this is a sidebar view becoming visible, close it and open the panel instead
+						setTimeout(() => {
+							// Close the sidebar
+							vscode.commands.executeCommand("workbench.action.closeSidebar")
+
+							// Open the panel
+							vscode.commands.executeCommand("companion.openPanel")
+						}, 100)
 					}
 				},
 				null,

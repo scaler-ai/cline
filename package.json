@@ -2,7 +2,7 @@
 	"name": "scaler-companion",
 	"displayName": "Scaler Companion",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-	"version": "2.1.17",
+	"version": "2.1.18",
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -40,7 +40,7 @@
 		"llama"
 	],
 	"activationEvents": [
-		"workspaceContains:evals.env"
+		"onStartupFinished"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -67,6 +67,11 @@
 				"command": "companion.plusButtonClicked",
 				"title": "New Task",
 				"icon": "$(add)"
+			},
+			{
+				"command": "companion.togglePanel",
+				"title": "Toggle Companion Panel",
+				"category": "Companion"
 			}
 		],
 		"keybindings": [
@@ -77,6 +82,13 @@
 				"win": "ctrl+'",
 				"linux": "ctrl+'",
 				"when": "editorHasSelection"
+			},
+			{
+				"command": "companion.togglePanel",
+				"key": "ctrl+l",
+				"mac": "cmd+l",
+				"linux": "ctrl+l",
+				"win": "ctrl+l"
 			},
 			{
 				"command": "companion.generateGitCommitMessage",

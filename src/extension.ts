@@ -49,6 +49,69 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 	)
 
+	// Create a panel in the rightmost side by default
+	const openCompanionPanel = async () => {
+		Logger.log("Opening Companion panel in rightmost side")
+		const panel = vscode.window.createWebviewPanel(
+			WebviewProvider.tabPanelId,
+			"Companion",
+			vscode.ViewColumn.Beside, // Opens in the rightmost column
+			{
+				enableScripts: true,
+				retainContextWhenHidden: true,
+				localResourceRoots: [context.extensionUri],
+			},
+		)
+
+		panel.iconPath = {
+			light: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_light.png"),
+			dark: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_dark.png"),
+		}
+
+		const panelProvider = new WebviewProvider(context, outputChannel)
+		await panelProvider.resolveWebviewView(panel)
+
+		// Lock the editor group so clicking on files doesn't replace the panel
+		await setTimeoutPromise(100)
+		await vscode.commands.executeCommand("workbench.action.lockEditorGroup")
+	}
+
+	// Open the panel by default when extension activates
+	openCompanionPanel()
+
+	// Register the open panel command - always opens the panel
+	context.subscriptions.push(
+		vscode.commands.registerCommand("companion.openPanel", async () => {
+			// Close any existing panel instances first
+			WebviewProvider.closeAllTabInstances()
+
+			// Open a new panel
+			await openCompanionPanel()
+		}),
+	)
+
+	// Register the toggle panel command - toggles the panel on/off
+	context.subscriptions.push(
+		vscode.commands.registerCommand("companion.togglePanel", async () => {
+			// Get all tab instances
+			const tabInstances = WebviewProvider.getTabInstances()
+
+			// If there are tab instances, dispose them
+			if (tabInstances.length > 0) {
+				WebviewProvider.closeAllTabInstances()
+			} else {
+				// Close the sidebar view if it's open
+				const sidebarInstance = WebviewProvider.getSidebarInstance()
+				if (sidebarInstance?.view?.visible) {
+					await vscode.commands.executeCommand("workbench.action.closeSidebar")
+				}
+
+				// Open a new panel
+				await openCompanionPanel()
+			}
+		}),
+	)
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand("companion.plusButtonClicked", async (webview: any) => {
 			const openChat = async (instance?: WebviewProvider) => {
