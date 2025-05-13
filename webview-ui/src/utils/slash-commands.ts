@@ -14,7 +14,7 @@ export const SUPPORTED_SLASH_COMMANDS: SlashCommand[] = [
 	},
 	{
 		name: "newrule",
-		description: "Create a new Cline rule based on your conversation",
+		description: "Create a new Companion rule based on your conversation",
 	},
 	{
 		name: "reportbug",

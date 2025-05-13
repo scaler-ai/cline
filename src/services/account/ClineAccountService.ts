@@ -16,7 +16,7 @@ export class ClineAccountService {
 	}
 
 	/**
-	 * Helper function to make authenticated requests to the Cline API
+	 * Helper function to make authenticated requests to the CompanionAPI
 	 * @param endpoint The API endpoint to call (without the base URL)
 	 * @param config Additional axios request configuration
 	 * @returns The API response data
@@ -26,7 +26,7 @@ export class ClineAccountService {
 		const clineApiKey = await this.getClineApiKey()
 
 		if (!clineApiKey) {
-			throw new Error("Cline API key not found")
+			throw new Error("Companion API key not found")
 		}
 
 		const url = `${this.baseUrl}${endpoint}`

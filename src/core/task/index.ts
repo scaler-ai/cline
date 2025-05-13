@@ -270,8 +270,8 @@ export class Task {
 	}
 
 	private async addToClineMessages(message: ClineMessage) {
-		// these values allow us to reconstruct the conversation history at the time this cline message was created
-		// it's important that apiConversationHistory is initialized before we add cline messages
+		// these values allow us to reconstruct the conversation history at the time this companion message was created
+		// it's important that apiConversationHistory is initialized before we add companion messages
 		message.conversationHistoryIndex = this.apiConversationHistory.length - 1 // NOTE: this is the index of the last added message which is the user message, and once the clinemessages have been presented we update the apiconversationhistory with the completed assistant message. This means when resetting to a message, we need to +1 this index to get the correct assistant message that this tool use corresponds to
 		message.conversationHistoryDeletedRange = this.conversationHistoryDeletedRange
 		this.clineMessages.push(message)
@@ -318,7 +318,7 @@ export class Task {
 				isFavorited: this.taskIsFavorited,
 			})
 		} catch (error) {
-			console.error("Failed to save cline messages:", error)
+			console.error("Failed to save companion messages:", error)
 		}
 	}
 
@@ -636,9 +636,9 @@ export class Task {
 		text?: string
 		images?: string[]
 	}> {
-		// If this Cline instance was aborted by the provider, then the only thing keeping us alive is a promise still running in the background, in which case we don't want to send its result to the webview as it is attached to a new instance of Cline now. So we can safely ignore the result of any active promises, and this class will be deallocated. (Although we set Cline = undefined in provider, that simply removes the reference to this instance, but the instance is still alive until this promise resolves or rejects.)
+		// If this Companion instance was aborted by the provider, then the only thing keeping us alive is a promise still running in the background, in which case we don't want to send its result to the webview as it is attached to a new instance of Companion now. So we can safely ignore the result of any active promises, and this class will be deallocated. (Although we set Companion = undefined in provider, that simply removes the reference to this instance, but the instance is still alive until this promise resolves or rejects.)
 		if (this.abort) {
-			throw new Error("Cline instance aborted")
+			throw new Error("Companion instance aborted")
 		}
 		let askTs: number
 		if (partial !== undefined) {
@@ -756,7 +756,7 @@ export class Task {
 
 	async say(type: ClineSay, text?: string, images?: string[], partial?: boolean): Promise<undefined> {
 		if (this.abort) {
-			throw new Error("Cline instance aborted")
+			throw new Error("Companion instance aborted")
 		}
 
 		if (partial !== undefined) {
@@ -836,7 +836,7 @@ export class Task {
 	async sayAndCreateMissingParamError(toolName: ToolUseName, paramName: string, relPath?: string) {
 		await this.say(
 			"error",
-			`Cline tried to use ${toolName}${
+			`Companion tried to use ${toolName}${
 				relPath ? ` for '${relPath.toPosix()}'` : ""
 			} without value for required parameter '${paramName}'. Retrying...`,
 		)
@@ -862,7 +862,7 @@ export class Task {
 			// Optionally, inform the user or handle the error appropriately
 		}
 		// conversationHistory (for API) and clineMessages (for webview) need to be in sync
-		// if the extension process were killed, then on restart the clineMessages might not be empty, so we need to set it to [] when we create a new Cline client (otherwise webview would show stale messages from previous session)
+		// if the extension process were killed, then on restart the clineMessages might not be empty, so we need to set it to [] when we create a new Companion client (otherwise webview would show stale messages from previous session)
 		this.clineMessages = []
 		this.apiConversationHistory = []
 
@@ -1044,7 +1044,7 @@ export class Task {
 			includeFileDetails = false // we only need file details the first time
 
 			//  The way this agentic loop works is that cline will be given a task that he then calls tools to complete. unless there's an attempt_completion call, we keep responding back to him with his tool's responses until he either attempt_completion or does not use anymore tools. If he does not use anymore tools, we ask him to consider if he's completed the task and then call attempt_completion, otherwise proceed with completing the task.
-			// There is a MAX_REQUESTS_PER_TASK limit to prevent infinite requests, but Cline is prompted to finish the task as efficiently as he can.
+			// There is a MAX_REQUESTS_PER_TASK limit to prevent infinite requests, but Companion is prompted to finish the task as efficiently as he can.
 
 			//const totalCost = this.calculateApiCost(totalInputTokens, totalOutputTokens)
 			if (didEndLoop) {
@@ -1054,7 +1054,7 @@ export class Task {
 			} else {
 				// this.say(
 				// 	"tool",
-				// 	"Cline responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
+				// 	"Companion responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
 				// )
 				nextUserContent = [
 					{
@@ -1609,7 +1609,7 @@ export class Task {
 
 	async presentAssistantMessage() {
 		if (this.abort) {
-			throw new Error("Cline instance aborted")
+			throw new Error("Companion instance aborted")
 		}
 
 		if (this.presentAssistantMessageLocked) {
@@ -1910,7 +1910,7 @@ export class Task {
 									diff = removeInvalidChars(diff)
 								}
 
-								// open the editor if not done already.  This is to fix diff error when model provides correct search-replace text but Cline throws error
+								// open the editor if not done already.  This is to fix diff error when model provides correct search-replace text but Companion throws error
 								// because file is not open.
 								if (!this.diffViewProvider.isEditing) {
 									await this.diffViewProvider.open(relPath)
@@ -2063,7 +2063,7 @@ export class Task {
 								} else {
 									// If auto-approval is enabled but this tool wasn't auto-approved, send notification
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to ${fileExists ? "edit" : "create"} ${path.basename(relPath)}`,
+										`Companion wants to ${fileExists ? "edit" : "create"} ${path.basename(relPath)}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 
@@ -2102,7 +2102,7 @@ export class Task {
 									}
 								}
 
-								// Mark the file as edited by Cline to prevent false "recently modified" warnings
+								// Mark the file as edited by Companion to prevent false "recently modified" warnings
 								this.fileContextTracker.markFileAsEditedByCline(relPath)
 
 								const { newProblemsMessage, userEdits, autoFormattingEdits, finalContent } =
@@ -2213,7 +2213,7 @@ export class Task {
 									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to read ${path.basename(absolutePath)}`,
+										`Companion wants to read ${path.basename(absolutePath)}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2294,7 +2294,7 @@ export class Task {
 									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to view directory ${path.basename(absolutePath)}/`,
+										`Companion wants to view directory ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2364,7 +2364,7 @@ export class Task {
 									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to view source code definitions in ${path.basename(absolutePath)}/`,
+										`Companion wants to view source code definitions in ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2446,7 +2446,7 @@ export class Task {
 									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to search files in ${path.basename(absolutePath)}/`,
+										`Companion wants to search files in ${path.basename(absolutePath)}/`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									const didApprove = await askApproval("tool", completeMessage)
@@ -2534,7 +2534,7 @@ export class Task {
 										this.consecutiveAutoApprovedRequestsCount++
 									} else {
 										showNotificationForApprovalIfAutoApprovalEnabled(
-											`Cline wants to use a browser and launch ${url}`,
+											`Companion wants to use a browser and launch ${url}`,
 										)
 										this.removeLastPartialMessageIfExistsWithType("say", "browser_action_launch")
 										const didApprove = await askApproval("browser_action_launch", url)
@@ -2715,7 +2715,7 @@ export class Task {
 									didAutoApprove = true
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to execute a command: ${command}`,
+										`Companion wants to execute a command: ${command}`,
 									)
 									// this.removeLastPartialMessageIfExistsWithType("say", "command")
 									const didApprove = await askApproval(
@@ -2813,7 +2813,7 @@ export class Task {
 										this.consecutiveMistakeCount++
 										await this.say(
 											"error",
-											`Cline tried to use ${tool_name} with an invalid JSON argument. Retrying...`,
+											`Companion tried to use ${tool_name} with an invalid JSON argument. Retrying...`,
 										)
 										pushToolResult(
 											formatResponse.toolError(
@@ -2842,7 +2842,7 @@ export class Task {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to use ${tool_name} on ${server_name}`,
+										`Companion wants to use ${tool_name} on ${server_name}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "use_mcp_server")
 									const didApprove = await askApproval("use_mcp_server", completeMessage)
@@ -2949,7 +2949,7 @@ export class Task {
 									this.consecutiveAutoApprovedRequestsCount++
 								} else {
 									showNotificationForApprovalIfAutoApprovalEnabled(
-										`Cline wants to access ${uri} on ${server_name}`,
+										`Companion wants to access ${uri} on ${server_name}`,
 									)
 									this.removeLastPartialMessageIfExistsWithType("say", "use_mcp_server")
 									const didApprove = await askApproval("use_mcp_server", completeMessage)
@@ -3005,7 +3005,7 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline has a question...",
+										subtitle: "Companion has a question...",
 										message: question.replace(/\n/g, " "),
 									})
 								}
@@ -3061,8 +3061,8 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to start a new task...",
-										message: `Cline is suggesting to start a new task with: ${context}`,
+										subtitle: "Companion wants to start a new task...",
+										message: `Companion is suggesting to start a new task with: ${context}`,
 									})
 								}
 
@@ -3109,8 +3109,8 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to condense the conversation...",
-										message: `Cline is suggesting to condense your conversation with: ${context}`,
+										subtitle: "Companion wants to condense the conversation...",
+										message: `Companion is suggesting to condense your conversation with: ${context}`,
 									})
 								}
 
@@ -3211,15 +3211,16 @@ export class Task {
 
 								if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 									showSystemNotification({
-										subtitle: "Cline wants to create a github issue...",
-										message: `Cline is suggesting to create a github issue with the title: ${title}`,
+										subtitle: "Companion wants to create a github issue...",
+										message: `Companion is suggesting to create a github issue with the title: ${title}`,
 									})
 								}
 
 								// Derive system information values algorithmically
 								const operatingSystem = os.platform() + " " + os.release()
 								const clineVersion =
-									vscode.extensions.getExtension("saoudrizwan.claude-dev")?.packageJSON.version || "Unknown"
+									vscode.extensions.getExtension("ashutoshshrimal.scaler-companion")?.packageJSON.version ||
+									"Unknown"
 								const systemInfo = `VSCode: ${vscode.version}, Node.js: ${process.version}, Architecture: ${os.arch()}`
 								const providerAndModel = `${(await getGlobalState(this.getContext(), "apiProvider")) as string} / ${this.api.getModel().id}`
 
@@ -3305,7 +3306,7 @@ export class Task {
 
 								// if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 								// 	showSystemNotification({
-								// 		subtitle: "Cline has a response...",
+								// 		subtitle: "Companion has a response...",
 								// 		message: response.replace(/\n/g, " "),
 								// 	})
 								// }
@@ -3583,7 +3584,7 @@ export class Task {
 
 	async recursivelyMakeClineRequests(userContent: UserContent, includeFileDetails: boolean = false): Promise<boolean> {
 		if (this.abort) {
-			throw new Error("Cline instance aborted")
+			throw new Error("Companion instance aborted")
 		}
 
 		// Used to know what models were used in the task if user wants to export metadata for error reporting purposes
@@ -3598,14 +3599,14 @@ export class Task {
 			if (this.autoApprovalSettings.enabled && this.autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Error",
-					message: "Cline is having trouble. Would you like to continue the task?",
+					message: "Companion is having trouble. Would you like to continue the task?",
 				})
 			}
 			const { response, text, images } = await this.ask(
 				"mistake_limit_reached",
 				this.api.getModel().id.includes("claude")
 					? `This may indicate a failure in his thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. "Try breaking down the task into smaller steps").`
-					: "Cline uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 3.7 Sonnet for its advanced agentic coding capabilities.",
+					: "Companion uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 3.7 Sonnet for its advanced agentic coding capabilities.",
 			)
 			if (response === "messageResponse") {
 				userContent.push(
@@ -3628,12 +3629,12 @@ export class Task {
 			if (this.autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Max Requests Reached",
-					message: `Cline has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests.`,
+					message: `Companion has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests.`,
 				})
 			}
 			await this.ask(
 				"auto_approval_max_req_reached",
-				`Cline has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
+				`Companion has auto-approved ${this.autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
 			)
 			// if we get past the promise it means the user approved and did not start a new task
 			this.consecutiveAutoApprovedRequestsCount = 0
@@ -3668,7 +3669,7 @@ export class Task {
 					{
 						milliseconds: 15_000,
 						message:
-							"Checkpoints taking too long to initialize. Consider re-opening Cline in a project that uses git, or disabling checkpoints.",
+							"Checkpoints taking too long to initialize. Consider re-opening Companion in a project that uses git, or disabling checkpoints.",
 					},
 				)
 			} catch (error) {
@@ -3890,7 +3891,7 @@ export class Task {
 				this.isStreaming = false
 			}
 
-			// OpenRouter/Cline may not return token usage as part of the stream (since it may abort early), so we fetch after the stream is finished
+			// OpenRouter/Companion may not return token usage as part of the stream (since it may abort early), so we fetch after the stream is finished
 			// (updateApiReq below will update the api_req_started message with the usage details. we do this async so it updates the api_req_started message in the background)
 			if (!didReceiveUsageChunk) {
 				this.api.getApiStreamUsage?.().then(async (apiStreamUsage) => {
@@ -3909,7 +3910,7 @@ export class Task {
 
 			// need to call here in case the stream was aborted
 			if (this.abort) {
-				throw new Error("Cline instance aborted")
+				throw new Error("Companion instance aborted")
 			}
 
 			this.didCompleteReadingStream = true

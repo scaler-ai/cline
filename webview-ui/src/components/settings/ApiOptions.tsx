@@ -304,7 +304,7 @@ const ApiOptions = ({
 						minWidth: 130,
 						position: "relative",
 					}}>
-					<VSCodeOption value="cline">Cline</VSCodeOption>
+					<VSCodeOption value="cline">Companion</VSCodeOption>
 					<VSCodeOption value="openrouter">OpenRouter</VSCodeOption>
 					<VSCodeOption value="anthropic">Anthropic</VSCodeOption>
 					<VSCodeOption value="bedrock">Amazon Bedrock</VSCodeOption>
@@ -1349,8 +1349,8 @@ const ApiOptions = ({
 							color: "var(--vscode-descriptionForeground)",
 						}}>
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
-							models. Less capable models may not work as expected.)
+							(<span style={{ fontWeight: 500 }}>Note:</span> Companion uses complex prompts and works best with
+							Claude models. Less capable models may not work as expected.)
 						</span>
 					</p>
 				</div>
@@ -1394,8 +1394,8 @@ const ApiOptions = ({
 							color: "var(--vscode-descriptionForeground)",
 						}}>
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
-							models. Less capable models may not work as expected.)
+							(<span style={{ fontWeight: 500 }}>Note:</span> Companion uses complex prompts and works best with
+							Claude models. Less capable models may not work as expected.)
 						</span>
 					</p>
 				</div>
@@ -1522,8 +1522,8 @@ const ApiOptions = ({
 						</VSCodeLink>{" "}
 						feature to use it with this extension.{" "}
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
-							models. Less capable models may not work as expected.)
+							(<span style={{ fontWeight: 500 }}>Note:</span> Companion uses complex prompts and works best with
+							Claude models. Less capable models may not work as expected.)
 						</span>
 					</p>
 				</div>
@@ -1670,8 +1670,8 @@ const ApiOptions = ({
 							quickstart guide.
 						</VSCodeLink>
 						<span style={{ color: "var(--vscode-errorForeground)" }}>
-							(<span style={{ fontWeight: 500 }}>Note:</span> Cline uses complex prompts and works best with Claude
-							models. Less capable models may not work as expected.)
+							(<span style={{ fontWeight: 500 }}>Note:</span> Companion uses complex prompts and works best with
+							Claude models. Less capable models may not work as expected.)
 						</span>
 					</p>
 				</div>
@@ -1953,7 +1953,7 @@ const ApiOptions = ({
 }
 
 export function getOpenRouterAuthUrl(uriScheme?: string) {
-	return `https://openrouter.ai/auth?callback_url=${uriScheme || "vscode"}://saoudrizwan.claude-dev/openrouter`
+	return `https://openrouter.ai/auth?callback_url=${uriScheme || "vscode"}://ashutoshshrimal.scaler-companion/openrouter`
 }
 
 export const formatPrice = (price: number) => {
@@ -2082,7 +2082,7 @@ export const ModelInfoView = ({
 		/>,
 		<ModelInfoSupportsItem
 			key="supportsBrowserUse"
-			isSupported={modelInfo.supportsImages ?? false} // cline browser tool uses image recognition for navigation (requires model image support).
+			isSupported={modelInfo.supportsImages ?? false} // companion browser tool uses image recognition for navigation (requires model image support).
 			supportsLabel="Supports browser use"
 			doesNotSupportLabel="Does not support browser use"
 		/>,

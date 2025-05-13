@@ -44,10 +44,10 @@ export class ClineHandler implements ApiHandler {
 			// openrouter returns an error object instead of the openai sdk throwing an error
 			if ("error" in chunk) {
 				const error = chunk.error as OpenRouterErrorResponse["error"]
-				console.error(`Cline API Error: ${error?.code} - ${error?.message}`)
+				console.error(`Companion API Error: ${error?.code} - ${error?.message}`)
 				// Include metadata in the error message if available
 				const metadataStr = error.metadata ? `\nMetadata: ${JSON.stringify(error.metadata, null, 2)}` : ""
-				throw new Error(`Cline API Error ${error.code}: ${error.message}${metadataStr}`)
+				throw new Error(`Companion API Error ${error.code}: ${error.message}${metadataStr}`)
 			}
 
 			if (!this.lastGenerationId && chunk.id) {
@@ -115,7 +115,7 @@ export class ClineHandler implements ApiHandler {
 				}
 			} catch (error) {
 				// ignore if fails
-				console.error("Error fetching cline generation details:", error)
+				console.error("Error fetching companion generation details:", error)
 			}
 		}
 		return undefined

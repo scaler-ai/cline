@@ -29,19 +29,19 @@ let outputChannel: vscode.OutputChannel
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	outputChannel = vscode.window.createOutputChannel("Cline")
+	outputChannel = vscode.window.createOutputChannel("Companion")
 	context.subscriptions.push(outputChannel)
 
 	ErrorService.initialize()
 	Logger.initialize(outputChannel)
-	Logger.log("Cline extension activated")
+	Logger.log("Companion extension activated")
 
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
 
 	// Initialize test mode and add disposables to context
 	context.subscriptions.push(...initializeTestMode(context, sidebarWebview))
 
-	vscode.commands.executeCommand("setContext", "cline.isDevMode", IS_DEV && IS_DEV === "true")
+	vscode.commands.executeCommand("setContext", "companion.isDevMode", IS_DEV && IS_DEV === "true")
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(WebviewProvider.sideBarId, sidebarWebview, {
@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 	)
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand("cline.plusButtonClicked", async (webview: any) => {
+		vscode.commands.registerCommand("companion.plusButtonClicked", async (webview: any) => {
 			const openChat = async (instance?: WebviewProvider) => {
 				await instance?.controller.clearTask()
 				await instance?.controller.postStateToWebview()
@@ -139,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
 			.then((module) => {
 				const devTaskCommands = module.registerTaskCommands(context, sidebarWebview.controller)
 				context.subscriptions.push(...devTaskCommands)
-				Logger.log("Cline dev task commands registered")
+				Logger.log("Companion dev task commands registered")
 			})
 			.catch((error) => {
 				Logger.log("Failed to register dev task commands: " + error)
@@ -166,17 +166,17 @@ export function activate(context: vscode.ExtensionContext) {
 						document.lineAt(Math.min(document.lineCount - 1, range.end.line + 3)).text.length,
 					)
 
-					const addAction = new vscode.CodeAction("Add to Cline", vscode.CodeActionKind.QuickFix)
+					const addAction = new vscode.CodeAction("Add to Companion", vscode.CodeActionKind.QuickFix)
 					addAction.command = {
-						command: "cline.addToChat",
-						title: "Add to Cline",
+						command: "companion.addToChat",
+						title: "Add to Companion",
 						arguments: [expandedRange, context.diagnostics],
 					}
 
-					const fixAction = new vscode.CodeAction("Fix with Cline", vscode.CodeActionKind.QuickFix)
+					const fixAction = new vscode.CodeAction("Fix with Companion", vscode.CodeActionKind.QuickFix)
 					fixAction.command = {
-						command: "cline.fixWithCline",
-						title: "Fix with Cline",
+						command: "companion.fixWithCompanion",
+						title: "Fix with Companion",
 						arguments: [expandedRange, context.diagnostics],
 					}
 
@@ -212,7 +212,7 @@ export async function deactivate() {
 	// Clean up test mode
 	cleanupTestMode()
 	await posthogClientProvider.shutdown()
-	Logger.log("Cline extension deactivated")
+	Logger.log("Companion extension deactivated")
 }
 
 // Set up development mode file watcher

@@ -221,13 +221,13 @@ describe("FileContextTracker", () => {
 		expect(modifiedFiles).to.include(filePath)
 	})
 
-	it("should not track Cline edits as user edits", async () => {
+	it("should not track Companion edits as user edits", async () => {
 		const filePath = "src/test-file.ts"
 
 		// First track the file to set up the watcher
 		await tracker.trackFileContext(filePath, "read_tool")
 
-		// Mark the file as edited by Cline
+		// Mark the file as edited by Companion
 		tracker.markFileAsEditedByCline(filePath)
 
 		// Reset the stubs to check the next calls

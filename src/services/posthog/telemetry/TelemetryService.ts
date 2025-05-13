@@ -7,7 +7,7 @@ import type { BrowserSettings } from "@shared/BrowserSettings"
 import { posthogClientProvider } from "../PostHogClientProvider"
 
 /**
- * PostHogClient handles telemetry event tracking for the Cline extension
+ * PostHogClient handles telemetry event tracking for the Companion extension
  * Uses PostHog analytics to track user interactions and system events
  * Respects user privacy settings and VSCode's global telemetry configuration
  */

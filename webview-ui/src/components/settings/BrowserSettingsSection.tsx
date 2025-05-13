@@ -317,7 +317,7 @@ export const BrowserSettingsSection: React.FC = () => {
 						color: "var(--vscode-descriptionForeground)",
 						margin: "0 0 6px 0px",
 					}}>
-					Enable Cline to use your Chrome
+					Enable Companion to use your Chrome
 					{isBundled ? "(not detected on your machine)" : detectedChromePath ? ` (${detectedChromePath})` : ""}. This
 					requires starting Chrome in debug mode
 					{browserSettings.remoteBrowserEnabled ? (

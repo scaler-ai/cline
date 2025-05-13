@@ -91,10 +91,10 @@ const ClineRulesToggleModal: React.FC = () => {
 	return (
 		<div ref={modalRef}>
 			<div ref={buttonRef} className="inline-flex min-w-0 max-w-full">
-				<Tooltip tipText="Manage Cline Rules" visible={isVisible ? false : undefined}>
+				<Tooltip tipText="Manage Companion Rules" visible={isVisible ? false : undefined}>
 					<VSCodeButton
 						appearance="icon"
-						aria-label="Cline Rules"
+						aria-label="Companion Rules"
 						onClick={() => setIsVisible(!isVisible)}
 						style={{ padding: "0px 0px", height: "20px" }}>
 						<div className="flex items-center gap-1 text-xs whitespace-nowrap min-w-0 w-full">
@@ -126,7 +126,7 @@ const ClineRulesToggleModal: React.FC = () => {
 					/>
 
 					<div className="flex justify-between items-center mb-2.5">
-						<div className="m-0 text-base font-semibold">Cline Rules</div>
+						<div className="m-0 text-base font-semibold">Companion Rules</div>
 
 						<VSCodeButton
 							appearance="icon"

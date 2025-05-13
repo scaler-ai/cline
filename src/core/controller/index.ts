@@ -268,7 +268,7 @@ export class Controller {
 				// You can send any JSON serializable data.
 				// Could also do this in extension .ts
 				//this.postMessageToWebview({ type: "text", text: `Extension: ${Date.now()}` })
-				// initializing new instance of Cline will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
+				// initializing new instance of Companion will make sure that any agentically running promises in old instance don't affect our new task. this essentially creates a fresh slate for the new task
 				await this.initTask(message.text, message.images)
 				break
 			case "condense":
@@ -862,11 +862,11 @@ export class Controller {
 				console.error("Failed to abort task")
 			})
 			if (this.task) {
-				// 'abandoned' will prevent this cline instance from affecting future cline instance gui. this may happen if its hanging on a streaming request
+				// 'abandoned' will prevent this companion instance from affecting future companion instance gui. this may happen if its hanging on a streaming request
 				this.task.abandoned = true
 			}
 			await this.initTask(undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
-			// await this.postStateToWebview() // new Cline instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
+			// await this.postStateToWebview() // new Companion instance will post state when it's ready. having this here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
 
@@ -1171,7 +1171,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// 'Add to Cline' context menu in editor and code action
 	async addSelectedCodeToChat(code: string, filePath: string, languageId: string, diagnostics?: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
-		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
+		await vscode.commands.executeCommand("scaler-companion.SidebarProvider.focus")
 		await setTimeoutPromise(100)
 
 		// Post message to webview with the selected code
@@ -1194,7 +1194,7 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// 'Add to Cline' context menu in Terminal
 	async addSelectedTerminalOutputToChat(output: string, terminalName: string) {
 		// Ensure the sidebar view is visible
-		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
+		await vscode.commands.executeCommand("scaler-companion.SidebarProvider.focus")
 		await setTimeoutPromise(100)
 
 		// Post message to webview with the selected terminal output
@@ -1213,16 +1213,16 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	}
 
 	// 'Fix with Cline' in code actions
-	async fixWithCline(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
+	async fixWithCompanion(code: string, filePath: string, languageId: string, diagnostics: vscode.Diagnostic[]) {
 		// Ensure the sidebar view is visible
-		await vscode.commands.executeCommand("claude-dev.SidebarProvider.focus")
+		await vscode.commands.executeCommand("scaler-companion.SidebarProvider.focus")
 		await setTimeoutPromise(100)
 
 		const fileMention = this.getFileMentionFromPath(filePath)
 		const problemsString = this.convertDiagnosticsToProblemsString(diagnostics)
 		await this.initTask(`Fix the following code in ${fileMention}\n\`\`\`\n${code}\n\`\`\`\n\nProblems:\n${problemsString}`)
 
-		console.log("fixWithCline", code, filePath, languageId, diagnostics, problemsString)
+		console.log("fixWithCompanion", code, filePath, languageId, diagnostics, problemsString)
 	}
 
 	convertDiagnosticsToProblemsString(diagnostics: vscode.Diagnostic[]) {
@@ -1510,9 +1510,9 @@ Here is the project's README to help you get started:\n\n${mcpDetails.readmeCont
 	// Caching mechanism to keep track of webview messages + API conversation history per provider instance
 
 	/*
-	Now that we use retainContextWhenHidden, we don't have to store a cache of cline messages in the user's state, but we could to reduce memory footprint in long conversations.
+	Now that we use retainContextWhenHidden, we don't have to store a cache of companion messages in the user's state, but we could to reduce memory footprint in long conversations.
 
-	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached cline messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
+	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached companion messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
 	- Some state does need to be shared between the instances, i.e. the API key--however there doesn't seem to be a good way to notify the other instances that the API key has changed.
 
 	We need to use a unique identifier for each ClineProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.

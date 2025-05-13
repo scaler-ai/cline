@@ -39,7 +39,7 @@ export interface OpenRouterModelPickerProps {
 	isPopup?: boolean
 }
 
-// Featured models for Cline provider
+// Featured models for Companion provider
 const featuredModels = [
 	{
 		id: "anthropic/claude-3.7-sonnet",
@@ -333,7 +333,7 @@ const OpenRouterModelPicker: React.FC<OpenRouterModelPickerProps> = ({ isPopup }
 						<VSCodeLink style={{ display: "inline", fontSize: "inherit" }} href="https://openrouter.ai/models">
 							OpenRouter.
 						</VSCodeLink>
-						If you're unsure which model to choose, Cline works best with{" "}
+						If you're unsure which model to choose, Companion works best with{" "}
 						<VSCodeLink
 							style={{ display: "inline", fontSize: "inherit" }}
 							onClick={() => handleModelChange("anthropic/claude-3.7-sonnet")}>
