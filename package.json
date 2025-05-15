@@ -2,7 +2,7 @@
 	"name": "scaler-companion",
 	"displayName": "Scaler Companion",
 	"description": "Autonomous coding agent right in your IDE, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
-	"version": "2.1.18",
+	"version": "2.1.19",
 	"icon": "assets/icons/icon.png",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -44,24 +44,6 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "scaler-companion-ActivityBar",
-					"title": "Companion",
-					"icon": "assets/icons/icon.svg"
-				}
-			]
-		},
-		"views": {
-			"scaler-companion-ActivityBar": [
-				{
-					"type": "webview",
-					"id": "scaler-companion.SidebarProvider",
-					"name": ""
-				}
-			]
-		},
 		"commands": [
 			{
 				"command": "companion.plusButtonClicked",
@@ -96,13 +78,6 @@
 			}
 		],
 		"menus": {
-			"view/title": [
-				{
-					"command": "companion.plusButtonClicked",
-					"group": "navigation@1",
-					"when": "view == scaler-companion.SidebarProvider"
-				}
-			],
 			"editor/title": [
 				{
 					"command": "companion.plusButtonClicked",

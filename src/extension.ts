@@ -39,15 +39,11 @@ export function activate(context: vscode.ExtensionContext) {
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
 
 	// Initialize test mode and add disposables to context
-	context.subscriptions.push(...initializeTestMode(context, sidebarWebview))
+	context.subscriptions.push(...initializeTestMode(context, sidebarWebview.controller))
 
 	vscode.commands.executeCommand("setContext", "companion.isDevMode", IS_DEV && IS_DEV === "true")
 
-	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(WebviewProvider.sideBarId, sidebarWebview, {
-			webviewOptions: { retainContextWhenHidden: true },
-		}),
-	)
+	// Sidebar view provider registration removed
 
 	// Create a panel in the rightmost side by default
 	const openCompanionPanel = async () => {
@@ -100,12 +96,6 @@ export function activate(context: vscode.ExtensionContext) {
 			if (tabInstances.length > 0) {
 				WebviewProvider.closeAllTabInstances()
 			} else {
-				// Close the sidebar view if it's open
-				const sidebarInstance = WebviewProvider.getSidebarInstance()
-				if (sidebarInstance?.view?.visible) {
-					await vscode.commands.executeCommand("workbench.action.closeSidebar")
-				}
-
 				// Open a new panel
 				await openCompanionPanel()
 			}
@@ -122,12 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 					action: "chatButtonClicked",
 				})
 			}
-			const isSidebar = !webview
-			if (isSidebar) {
-				openChat(WebviewProvider.getSidebarInstance())
-			} else {
-				WebviewProvider.getTabInstances().forEach(openChat)
-			}
+			WebviewProvider.getTabInstances().forEach(openChat)
 		}),
 	)
 

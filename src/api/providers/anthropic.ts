@@ -13,7 +13,7 @@ export class AnthropicHandler implements ApiHandler {
 		this.options = options
 		this.client = new Anthropic({
 			apiKey: "dummy-key", // Real key is now in middleware
-			baseURL: "http://localhost:8000/api/extension",
+			baseURL: "https://api.companion.scaler.com/api/extension",
 		})
 	}
 

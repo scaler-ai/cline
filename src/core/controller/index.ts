@@ -706,57 +706,7 @@ export class Controller {
 			await updateGlobalState(this.context, "previousModeReasoningEffort", apiConfiguration.reasoningEffort)
 			switch (apiConfiguration.apiProvider) {
 				case "anthropic":
-				case "vertex":
-				case "gemini":
-				case "asksage":
-				case "openai-native":
-				case "qwen":
-				case "deepseek":
-				case "xai":
 					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.apiModelId)
-					break
-				case "bedrock":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.apiModelId)
-					await updateGlobalState(
-						this.context,
-						"previousModeAwsBedrockCustomSelected",
-						apiConfiguration.awsBedrockCustomSelected,
-					)
-					await updateGlobalState(
-						this.context,
-						"previousModeAwsBedrockCustomModelBaseId",
-						apiConfiguration.awsBedrockCustomModelBaseId,
-					)
-					break
-				case "openrouter":
-				case "cline":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.openRouterModelId)
-					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.openRouterModelInfo)
-					break
-				case "vscode-lm":
-					// Important we don't set modelId to this, as it's an object not string (webview expects model id to be a string)
-					await updateGlobalState(
-						this.context,
-						"previousModeVsCodeLmModelSelector",
-						apiConfiguration.vsCodeLmModelSelector,
-					)
-					break
-				case "openai":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.openAiModelId)
-					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.openAiModelInfo)
-					break
-				case "ollama":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.ollamaModelId)
-					break
-				case "lmstudio":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.lmStudioModelId)
-					break
-				case "litellm":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.liteLlmModelId)
-					break
-				case "requesty":
-					await updateGlobalState(this.context, "previousModeModelId", apiConfiguration.requestyModelId)
-					await updateGlobalState(this.context, "previousModeModelInfo", apiConfiguration.requestyModelInfo)
 					break
 			}
 

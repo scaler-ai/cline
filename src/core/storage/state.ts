@@ -212,19 +212,8 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		getGlobalState(context, "shellIntegrationTimeout") as Promise<number | undefined>,
 	])
 
-	let apiProvider: ApiProvider
-	if (storedApiProvider) {
-		apiProvider = storedApiProvider
-	} else {
-		// Either new user or legacy user that doesn't have the apiProvider stored in state
-		// (If they're using OpenRouter or Bedrock, then apiProvider state will exist)
-		if (apiKey) {
-			apiProvider = "anthropic"
-		} else {
-			// New users should default to openrouter, since they've opted to use an API key instead of signing in
-			apiProvider = "openrouter"
-		}
-	}
+	// Always use anthropic as the API provider
+	let apiProvider: ApiProvider = "anthropic"
 
 	const localClineRulesToggles = (await getWorkspaceState(context, "localClineRulesToggles")) as ClineRulesToggles
 
