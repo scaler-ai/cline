@@ -39,66 +39,13 @@ export function activate(context: vscode.ExtensionContext) {
 	const sidebarWebview = new WebviewProvider(context, outputChannel)
 
 	// Initialize test mode and add disposables to context
-	context.subscriptions.push(...initializeTestMode(context, sidebarWebview.controller))
+	context.subscriptions.push(...initializeTestMode(context, sidebarWebview))
 
 	vscode.commands.executeCommand("setContext", "companion.isDevMode", IS_DEV && IS_DEV === "true")
 
-	// Sidebar view provider registration removed
-
-	// Create a panel in the rightmost side by default
-	const openCompanionPanel = async () => {
-		Logger.log("Opening Companion panel in rightmost side")
-		const panel = vscode.window.createWebviewPanel(
-			WebviewProvider.tabPanelId,
-			"Companion",
-			vscode.ViewColumn.Beside, // Opens in the rightmost column
-			{
-				enableScripts: true,
-				retainContextWhenHidden: true,
-				localResourceRoots: [context.extensionUri],
-			},
-		)
-
-		panel.iconPath = {
-			light: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_light.png"),
-			dark: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_dark.png"),
-		}
-
-		const panelProvider = new WebviewProvider(context, outputChannel)
-		await panelProvider.resolveWebviewView(panel)
-
-		// Lock the editor group so clicking on files doesn't replace the panel
-		await setTimeoutPromise(100)
-		await vscode.commands.executeCommand("workbench.action.lockEditorGroup")
-	}
-
-	// Open the panel by default when extension activates
-	openCompanionPanel()
-
-	// Register the open panel command - always opens the panel
 	context.subscriptions.push(
-		vscode.commands.registerCommand("companion.openPanel", async () => {
-			// Close any existing panel instances first
-			WebviewProvider.closeAllTabInstances()
-
-			// Open a new panel
-			await openCompanionPanel()
-		}),
-	)
-
-	// Register the toggle panel command - toggles the panel on/off
-	context.subscriptions.push(
-		vscode.commands.registerCommand("companion.togglePanel", async () => {
-			// Get all tab instances
-			const tabInstances = WebviewProvider.getTabInstances()
-
-			// If there are tab instances, dispose them
-			if (tabInstances.length > 0) {
-				WebviewProvider.closeAllTabInstances()
-			} else {
-				// Open a new panel
-				await openCompanionPanel()
-			}
+		vscode.window.registerWebviewViewProvider(WebviewProvider.sideBarId, sidebarWebview, {
+			webviewOptions: { retainContextWhenHidden: true },
 		}),
 	)
 
@@ -112,9 +59,82 @@ export function activate(context: vscode.ExtensionContext) {
 					action: "chatButtonClicked",
 				})
 			}
-			WebviewProvider.getTabInstances().forEach(openChat)
+			const isSidebar = !webview
+			if (isSidebar) {
+				openChat(WebviewProvider.getSidebarInstance())
+			} else {
+				WebviewProvider.getTabInstances().forEach(openChat)
+			}
 		}),
 	)
+
+	const openCompanionInNewTab = async () => {
+		// Check if there are already tab instances, if so, don't open another one
+		if (WebviewProvider.getTabInstances().length > 0) {
+			// Focus on the first existing tab instance instead of creating a new one
+			const existingTabs = WebviewProvider.getTabInstances()
+			if (existingTabs.length > 0 && existingTabs[0].view && "reveal" in existingTabs[0].view) {
+				existingTabs[0].view.reveal()
+				return
+			}
+			return
+		}
+
+		Logger.log("Opening Companion in new tab")
+		// (this example uses webviewProvider activation event which is necessary to deserialize cached webview, but since we use retainContextWhenHidden, we don't need to use that event)
+		// https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/src/extension.ts
+		const tabWebview = new WebviewProvider(context, outputChannel)
+		//const column = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
+		const lastCol = Math.max(...vscode.window.visibleTextEditors.map((editor) => editor.viewColumn || 0))
+
+		// Check if there are any visible text editors, otherwise open a new group to the right
+		const hasVisibleEditors = vscode.window.visibleTextEditors.length > 0
+		if (!hasVisibleEditors) {
+			await vscode.commands.executeCommand("workbench.action.newGroupRight")
+		}
+		const targetCol = hasVisibleEditors ? Math.max(lastCol + 1, 1) : vscode.ViewColumn.Two
+
+		const panel = vscode.window.createWebviewPanel(WebviewProvider.tabPanelId, "Companion", targetCol, {
+			enableScripts: true,
+			retainContextWhenHidden: true,
+			localResourceRoots: [context.extensionUri],
+		})
+		// TODO: use better svg icon with light and dark variants (see https://stackoverflow.com/questions/58365687/vscode-extension-iconpath)
+
+		panel.iconPath = {
+			light: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_light.png"),
+			dark: vscode.Uri.joinPath(context.extensionUri, "assets", "icons", "robot_panel_dark.png"),
+		}
+		tabWebview.resolveWebviewView(panel)
+
+		// Lock the editor group so clicking on files doesn't open them over the panel
+		await setTimeoutPromise(100)
+		await vscode.commands.executeCommand("workbench.action.lockEditorGroup")
+	}
+
+	context.subscriptions.push(vscode.commands.registerCommand("companion.popoutButtonClicked", openCompanionInNewTab))
+
+	// Create a function to toggle the panel (open if closed, close if open)
+	const toggleCompanionPanel = async () => {
+		const existingTabs = WebviewProvider.getTabInstances()
+		if (existingTabs.length > 0) {
+			// If panel is already open, close all tab instances
+			existingTabs.forEach((instance) => {
+				if (instance.view && "dispose" in instance.view) {
+					instance.view.dispose()
+				}
+			})
+		} else {
+			// If panel is closed, open it using the existing function
+			await openCompanionInNewTab()
+		}
+	}
+
+	// Register the togglePanel command with the new toggle function
+	context.subscriptions.push(vscode.commands.registerCommand("companion.togglePanel", toggleCompanionPanel))
+
+	// Automatically open the extension in a new tab when activated
+	openCompanionInNewTab()
 
 	/*
 	We use the text document content provider API to show the left side for diff view by creating a virtual document for the original content. This makes it readonly so users know to edit the right side if they want to keep their changes.
