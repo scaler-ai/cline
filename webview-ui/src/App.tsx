@@ -81,10 +81,6 @@ const AppContent = () => {
 		}
 	}, [shouldShowAnnouncement])
 
-	if (!didHydrateState) {
-		return null
-	}
-
 	return (
 		<>
 			{showWelcome ? (
