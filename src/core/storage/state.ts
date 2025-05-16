@@ -309,7 +309,7 @@ export async function getAllExtensionState(context: vscode.ExtensionContext) {
 		globalClineRulesToggles: globalClineRulesToggles || {},
 		localClineRulesToggles: localClineRulesToggles || {},
 		browserSettings: { ...DEFAULT_BROWSER_SETTINGS, ...browserSettings }, // this will ensure that older versions of browserSettings (e.g. before remoteBrowserEnabled was added) are merged with the default values (false for remoteBrowserEnabled)
-		chatSettings: chatSettings || DEFAULT_CHAT_SETTINGS,
+		chatSettings: DEFAULT_CHAT_SETTINGS,
 		userInfo,
 		previousModeApiProvider,
 		previousModeModelId,
