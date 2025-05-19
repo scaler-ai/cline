@@ -1002,7 +1002,7 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 					{/* {telemetrySetting === "unset" && <TelemetryBanner />} */}
 
 					<HomeHeader />
-					{taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />}
+					{/* {taskHistory.length > 0 && <HistoryPreview showHistoryView={showHistoryView} />} */}
 				</div>
 			)}
 

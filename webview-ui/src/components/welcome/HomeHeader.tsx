@@ -7,9 +7,15 @@ const HomeHeader = () => {
 			<div className="my-5">
 				<ClineLogoVariable className="size-16" />
 			</div>
-			<div className="text-center flex items-center justify-center">
-				<h2 className="m-0 text-[var(--vscode-font-size)]">{"What can I do for you? 2.1.25"}</h2>
-				<HeroTooltip
+			<div className="text-center flex-col items-center justify-center">
+				<h2 className="m-0 text-[var(--vscode-font-size)]">
+					{"I am your Scaler Companion."}
+				</h2>
+				<br />
+				<h3 className="m-0 text-[var(--vscode-font-size)]">
+					{"Let me know in case you need any help solving the problem! 2.1.26"}
+				</h3>
+				{/* <HeroTooltip
 					placement="bottom"
 					className="max-w-[300px]"
 					content={
@@ -19,7 +25,7 @@ const HomeHeader = () => {
 						className="codicon codicon-info ml-2 cursor-pointer"
 						style={{ fontSize: "14px", color: "var(--vscode-textLink-foreground)" }}
 					/>
-				</HeroTooltip>
+				</HeroTooltip> */}
 			</div>
 		</div>
 	)
