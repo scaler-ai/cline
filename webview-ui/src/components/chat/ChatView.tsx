@@ -607,9 +607,10 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 				case "action":
 					switch (message.action!) {
 						case "didBecomeVisible":
-							if (!isHidden && !sendingDisabled && !enableButtons) {
-								textAreaRef.current?.focus()
-							}
+							// Remove automatic focus on visibility
+							// if (!isHidden && !sendingDisabled && !enableButtons) {
+							// 	textAreaRef.current?.focus()
+							// }
 							break
 						case "focusChatInput":
 							textAreaRef.current?.focus()
@@ -666,16 +667,17 @@ const ChatView = ({ isHidden, showAnnouncement, hideAnnouncement, showHistoryVie
 		textAreaRef.current?.focus()
 	})
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			if (!isHidden && !sendingDisabled && !enableButtons) {
-				textAreaRef.current?.focus()
-			}
-		}, 50)
-		return () => {
-			clearTimeout(timer)
-		}
-	}, [isHidden, sendingDisabled, enableButtons])
+	// useEffect(() => {
+	// Remove automatic focus on visibility changes
+	// const timer = setTimeout(() => {
+	// 	if (!isHidden && !sendingDisabled && !enableButtons) {
+	// 		textAreaRef.current?.focus()
+	// 	}
+	// }, 50)
+	// return () => {
+	// 	clearTimeout(timer)
+	// }
+	// }, [isHidden, sendingDisabled, enableButtons])
 
 	const visibleMessages = useMemo(() => {
 		return modifiedMessages.filter((message) => {

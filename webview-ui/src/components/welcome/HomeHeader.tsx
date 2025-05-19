@@ -8,12 +8,10 @@ const HomeHeader = () => {
 				<ClineLogoVariable className="size-16" />
 			</div>
 			<div className="text-center flex-col items-center justify-center">
-				<h2 className="m-0 text-[var(--vscode-font-size)]">
-					{"I am your Scaler Companion."}
-				</h2>
+				<h2 className="m-0 text-[var(--vscode-font-size)]">{"I am your Scaler Companion."}</h2>
 				<br />
 				<h3 className="m-0 text-[var(--vscode-font-size)]">
-					{"Let me know in case you need any help solving the problem! 2.1.26"}
+					{"Let me know in case you need any help solving the problem! 2.1.27"}
 				</h3>
 				{/* <HeroTooltip
 					placement="bottom"
